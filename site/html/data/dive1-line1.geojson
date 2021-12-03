@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "dive1-line1", "diveNumber": 1, "lineNumber": 1, "date": "30-10-2021", "time": "13:00", "lengthFt": 300, "distanceToRefPtFt": 159, "lengthAdjustedFt": 459, "headingDeg": 130, "magneticDeclinationDeg": -16, "headingAdjustedDeg": 114, "tideHeightFt": 7.0, "pointDepthAdjustmentFt": -1, "tideHeightTargetFt": 6.0, "refPointUTMEasting19T": 654646.65, "refPointUTMNorthing19T": 4999630.91 }, "geometry": { "type": "LineString", "coordinates": [ [ -67.033295966279368, 45.133218019591602 ], [ -67.031686747310914, 45.132677187530064 ] ] } }
+]
+}

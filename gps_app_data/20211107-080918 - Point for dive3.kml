@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with BasicAirData GPS Logger for Android - ver. 3.0.2 -->
+<!-- Track 7 = 3 TrackPoints + 0 Placemarks -->
+<kml xmlns="http://www.opengis.net/kml/2.2">
+ <Document>
+  <name>GPS Logger 20211107-080918</name>
+  <description><![CDATA[Point for dive3
+3 Trackpoints + 0 Placemarks]]></description>
+  <Style id="TrackStyle">
+   <LineStyle>
+    <color>ff0000ff</color>
+    <width>3</width>
+   </LineStyle>
+   <PolyStyle>
+    <color>7f0000ff</color>
+   </PolyStyle>
+   <BalloonStyle>
+    <text><![CDATA[<p style="color:red;font-weight:bold">$[name]</p><p style="font-size:11px">$[description]</p><p style="font-size:7px">Track Stats based on: Total time | Time in Movement</p>]]></text>
+   </BalloonStyle>
+  </Style>
+  <Style id="PlacemarkStyle">
+   <IconStyle>
+    <Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle_highlight.png</href></Icon>
+   </IconStyle>
+  </Style>
+  <Placemark id="1">
+   <name>Reference pt1</name>
+   <styleUrl>#PlacemarkStyle</styleUrl>
+   <Point>
+    <altitudeMode>clampToGround</altitudeMode>
+    <coordinates>-67.03189131,45.13213740,-23.622</coordinates>
+    <extrude>1</extrude>
+   </Point>
+  </Placemark>
+
+  <Placemark id="20211107-080918">
+   <name>Track 20211107-080918</name>
+   <description><![CDATA[<b>Point for dive3</b><br><br>Distance = 0 m<br>Duration = 00:02 | 00:00<br>Altitude Gap = 0 m<br>Max Speed = 0 km/h<br>Avg Speed = 0.0 |  km/h<br>Direction =  <br><br><i>3 Trackpoints</i>]]></description>
+   <styleUrl>#TrackStyle</styleUrl>
+   <LineString>
+    <extrude>0</extrude>
+    <tessellate>0</tessellate>
+    <altitudeMode>clampToGround</altitudeMode>
+    <coordinates>
+     -67.03189119,45.13213736,-23.597
+     -67.03189133,45.13213734,-23.626
+     -67.03189131,45.13213740,-23.622
+    </coordinates>
+   </LineString>
+  </Placemark>
+
+ </Document>
+</kml>
+ 

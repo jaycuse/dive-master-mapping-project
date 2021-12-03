@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+site/token
+*2021-DiveData/
+.idea/
+cad-import*
+*.zip
+Google_TerrainStreetsWater.xml
+Imagery_HighResolution*
+map.osm
+*.dwg
