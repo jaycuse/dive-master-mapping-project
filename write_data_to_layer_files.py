@@ -188,20 +188,40 @@ def main():
 
     #Step 4
     # Extra points, the yellow buoy dive1-line-3 has a sphere plastic cement filled anchor at reel point 210
-    # From there we hooked a reel to it and surface swam to the buoy. We then took a back bearing of 325 degrees (opposite: 145 degrees)
+    # From there we hooked a reel to it and surface swam to the buoy. We then took a back bearing of 310 degrees (opposite: 140 degrees)
     # And distance reading of 192 ft and depth of 41 feet top 42 feet bottom
     # knowing dive1-line3 point we can use it as reference point to find coordinates for the buoy anchor point.
     # buoy dive 10:00 on 7 Nov was 10 ft tide.
     points_of_interest = []
-    buoy_ref_line = get_dive_line_by_name(dive_lines,"dive1-line3")
-    if buoy_ref_line is None:
-            print("PROBLEM getting ref line")
-    buoy_ref_point = buoy_ref_line.get_point_by_reel_length_mark_ft(210)
+    buoy_ref_point = get_ref_point_by_line_name_and_reel_mark_ft(dive_lines,"dive1-line3",210)
     if buoy_ref_point is None:
         print("PROBLEM getting ref point")
-    buoy_point = DivePointInterest('yellow-buoy', buoy_ref_point, 42, "7-11-2020", "10:00", 10, buoy_ref_point.get_tide_height_target_ft(), 145, buoy_ref_point.get_magnetic_declination_deg(), 192, 'Closest yellow buoy')
+    buoy_point = DivePointInterest('yellow-buoy', buoy_ref_point, 42, "7-11-2020", "10:00", 10, buoy_ref_point.get_tide_height_target_ft(), 140, buoy_ref_point.get_magnetic_declination_deg(), 192, 'Closest yellow buoy','buoy-icon')
     points_of_interest.append(buoy_point)
 
+    ## Hard coding point of interests because no time.
+    goal_post =  buoy_ref_point.get_ref_point()
+    d2_l1_ref_point = get_ref_point_by_line_name_and_reel_mark_ft(dive_lines,"dive2-line1",100)
+    d2_l2_ref_point = get_ref_point_by_line_name_and_reel_mark_ft(dive_lines,"dive2-line2",100)
+    # Sphere 1 and Sphere 2
+    sphere1_point = DivePointInterest('sphere1', goal_post, 12, buoy_ref_point.get_date(), buoy_ref_point.get_line_time(), buoy_ref_point.get_tide_height_ft(), buoy_ref_point.get_tide_height_target_ft(), 140, buoy_ref_point.get_magnetic_declination_deg(), 383, 'sphere cement anchor diamater: 33 cm (1 slate height)','anchor-ball-icon')
+    sphere2_point = DivePointInterest('sphere2', goal_post, 13, buoy_ref_point.get_date(), buoy_ref_point.get_line_time(), buoy_ref_point.get_tide_height_ft(), buoy_ref_point.get_tide_height_target_ft(), 140, buoy_ref_point.get_magnetic_declination_deg(), 400, 'sphere cement anchor diamater: 33 cm (1 slate height)','anchor-ball-icon')
+    # Pipe
+    pipe1_point = DivePointInterest('pipe1', goal_post, 18, buoy_ref_point.get_date(), buoy_ref_point.get_line_time(), buoy_ref_point.get_tide_height_ft(), buoy_ref_point.get_tide_height_target_ft(), 140, buoy_ref_point.get_magnetic_declination_deg(), 418, 'Pipe about 10 ft long.','pipe-icon')
+    # Anchor
+    anchor_point = DivePointInterest('anchor', goal_post, 22, buoy_ref_point.get_date(), buoy_ref_point.get_line_time(), buoy_ref_point.get_tide_height_ft(), buoy_ref_point.get_tide_height_target_ft(), 140, buoy_ref_point.get_magnetic_declination_deg(), 443, 'Anchor, top part width, 66 cm (2 slate heights)','anchor-icon')
+    #Moar pipes
+    pipe2_point = DivePointInterest('pipe2', goal_post, 15, d2_l1_ref_point.get_date(), d2_l1_ref_point.get_line_time(), d2_l1_ref_point.get_tide_height_ft(), d2_l1_ref_point.get_tide_height_target_ft(), 120, d2_l1_ref_point.get_magnetic_declination_deg(), 409, 'Pipe 5 inch diameter','pipe-icon')
+    pipe3_point = DivePointInterest('pipe3', goal_post, 6, d2_l2_ref_point.get_date(), d2_l2_ref_point.get_line_time(), d2_l2_ref_point.get_tide_height_ft(), d2_l2_ref_point.get_tide_height_target_ft(), 110, d2_l2_ref_point.get_magnetic_declination_deg(), 323, 'Pipe 5 inch with suspended rope, very long 30 ft plus.','pipe-icon')
+    pipe4_point = DivePointInterest('pipe4', goal_post, 14, d2_l2_ref_point.get_date(), d2_l2_ref_point.get_line_time(), d2_l2_ref_point.get_tide_height_ft(), d2_l2_ref_point.get_tide_height_target_ft(), 110, d2_l2_ref_point.get_magnetic_declination_deg(), 433, 'Pipe 5 inch with suspended rope, very long 30 ft plus.','pipe-icon')
+    # Append points
+    points_of_interest.append(sphere1_point)
+    points_of_interest.append(sphere2_point)
+    points_of_interest.append(pipe1_point)
+    points_of_interest.append(anchor_point)
+    points_of_interest.append(pipe2_point)
+    points_of_interest.append(pipe3_point)
+    points_of_interest.append(pipe4_point)
 
     # Step 5, write data to file
     for dive_line in dive_lines:
@@ -223,6 +243,15 @@ def main():
         sorted_coords = sorted(coords,key=itemgetter(1)) #This sorts coordinates north to south
         #write_relief_line_to_shape_file(new_dir,'relief_line_{}'.format(str(adjusted_depth).replace(".", "_")),to_relief_line_dict(sorted_coords,adjusted_depth))
         write_relief_line_to_geojson_file(new_dir,'relief_line_{}'.format(str(adjusted_depth).replace(".", "_")),to_relief_line_dict(sorted_coords,adjusted_depth))
+
+def get_ref_point_by_line_name_and_reel_mark_ft(dive_lines, line_name, reel_mark_ft):
+    ref_line = get_dive_line_by_name(dive_lines,line_name)
+    ref_point = None
+    if ref_line is None:
+            print("PROBLEM getting ref line: {}".format(line_name))
+    ref_point = ref_line.get_point_by_reel_length_mark_ft(reel_mark_ft)
+    return ref_point
+
 
 def get_dive_line_by_name(dive_lines,name):
     line_to_return = None

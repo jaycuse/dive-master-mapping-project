@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "GPS Logger 20211106-140242",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Track 20211106-140242", "description": "<b>Parking<\/b><br><br>Distance = 91 m<br>Duration = 01:23 | 01:21<br>Altitude Gap = -6 m<br>Max Speed = 4 km\/h<br>Avg Speed = 3.9 | 4.0 km\/h<br>Direction = NW <br><br><i>84 Trackpoints<\/i>", "altitudeMode": "clampToGround" }, "geometry": { "type": "LineString", "coordinates": [[-67.03384903,45.13326840],[-67.03388257,45.13322947],[-67.03340001,45.13303101],[-67.03335673,45.13317604],[-67.03348765,45.13324092],[-67.03372677,45.13326458]] } }
+]
+}

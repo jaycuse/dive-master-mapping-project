@@ -1,6 +1,6 @@
-mapboxgl.accessToken = 'TOKEN_HERE';
+mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZWhhbWlsdG9uMDAiLCJhIjoiNDVjS2puUSJ9.aLvWM5BnllUGJ0e6nwMSEg';
 const REST_API_URL = 'https://api-iwls.dfo-mpo.gc.ca/api/v1/stations/{station_id}/data?time-series-code=wlp&from={start_date}T00:00:00Z&to={end_date}T00:00:00Z'
-const STATION_ID = '5cebf1e23d0f4a073c4bc0f6';
+const STATION_ID = '5cebf1df3d0f4a073c4bbc19';
 const dateInput = document.getElementById("tidedt");
 const currentDate = new Date();
 const tzoffset = currentDate.getTimezoneOffset();
@@ -50,7 +50,8 @@ const layers_data_files = [
 "data/dive2-line1-points.geojson",
 "data/dive2-line2-points.geojson",
 "data/dive2-line3-points.geojson",
-"data/points-of-interest.geojson"
+"data/points-of-interest.geojson",
+"data/parking.geojson"
 ];
 // Holds loaded geojson data loaded from file
 const layer_data = {}
@@ -127,7 +128,9 @@ map.on('idle', () => {
         link.id = id;
         link.href = '#';
         link.textContent = id;
-        link.className = 'active';
+        if(id != 'lines') { // dont activate lines layer yet
+            link.className = 'active';
+        }
 
         // Show or hide layer when the toggle is clicked.
         link.onclick = function (e) {
@@ -178,7 +181,15 @@ function setupClickOnPoint() {
         map.on('click', name, (e) => {
             // Copy coordinates array.
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = 'Heading from ref. point ' +  e.features[0].properties.lineHeadingDeg + '°<br />Distance from ref. point: ' + e.features[0].properties.distanceToRefPtFt + ' ft.';
+            const note = e.features[0].properties.note
+            const desc = e.features[0].properties.description
+            let noteToAdd = ""
+            if( typeof note !== 'undefined' && note != "N/A") {
+                noteToAdd = "<br />Note: " + note;
+            } else if (typeof desc !== 'undefined') {
+                noteToAdd = "<br />Description: " + desc;
+            }
+            const description = 'Heading from ref. point ' +  e.features[0].properties.lineHeadingDeg + '°<br />Distance from ref. point: ' + e.features[0].properties.distanceToRefPtFt + ' ft.' + noteToAdd;
 
             // Ensure that if the map is zoomed out such that multiple
             // copies of the feature are visible, the popup appears
@@ -294,58 +305,117 @@ function setupMarkers() {
 
 function mapOnLoad() {
     map.on('load', () => {
-                //Add reference point layer
-                map.addSource('points',{ 'type': 'geojson','data': points })
-                map.addLayer({
-                    'id': 'points-depth',
-                    'type': 'symbol',
-                    'source': 'points',
-                    'layout': {
-                            'text-variable-anchor': ['top','bottom','left','right'],
-                            'text-radial-offset': 0.5,
-                            'text-justify': 'auto',
-                            'icon-image':['get','icon']
-                            }
-                });
+                map.loadImage('./assets/anchor-ball-small.png', (error, image) => {
+                    map.addImage('anchor-ball-icon', image, { 'sdf': true });
+                    map.loadImage('./assets/anchor-small.png', (error, image) => {
+                        map.addImage('anchor-icon', image, { 'sdf': true });
+                        map.loadImage('./assets/pipe-small.png', (error, image) => {
+                            map.addImage('pipe-icon', image, { 'sdf': true });
+                            map.loadImage('./assets/buoy-small.png', (error, image) => {
+                                map.addImage('buoy-icon', image, { 'sdf': true });
+                                map.loadImage('./assets/circle-15.png', (error, image) => {
+                                    map.addImage('circle-icon', image, { 'sdf': true });
 
-               // Dynamically add layers for our geojson data that was loaded by file
-               layers_data_files.forEach(data_file => {
-                    let name = data_file.replace('data/','').replace('.geojson','');
-                    // Setup layer for lines
-                    let layer = {
-                        'id': name+'_layer',
-                        'type': 'line',
-                        'source': name
-                        }
-                    if(name.includes('points')) {
-                        // Setup layer for points
-                        layer = {
-                            'id': name+'_layer',
-                            'type': 'symbol',
-                            'source': name,
-                            'layout': {
-                                  'text-field': ['get','depthAdjustedFt'],
-                                  'text-variable-anchor': ['top','bottom','left','right'],
-                                  'text-radial-offset': 0.5,
-                                  'text-justify': 'auto',
-                                  'icon-image':['get','icon']
-                              }
-                            }
-                        // Update icon for points
-                        let points = layer_data[data_file]
-                        points.features.forEach(feature => {
-                            feature.properties['icon'] = 'marker-15'
+                                    //Add reference point layer
+                                    map.addSource('points',{ 'type': 'geojson','data': points })
+                                    map.addLayer({
+                                        'id': 'points-depth',
+                                        'type': 'symbol',
+                                        'source': 'points',
+                                        'layout': {
+                                                'text-variable-anchor': ['top','bottom','left','right'],
+                                                'text-radial-offset': 0.5,
+                                                'text-justify': 'auto',
+                                                'icon-image':['get','icon']
+                                                }
+                                    });
+
+                                   // Dynamically add layers for our geojson data that was loaded by file
+                                   layers_data_files.forEach(data_file => {
+                                        let name = data_file.replace('data/','').replace('.geojson','');
+                                        // Setup layer for lines
+                                        let layer = {
+                                            'id': name+'_layer',
+                                            'type': 'line',
+                                            'source': name
+                                            }
+                                        if(name.includes('parking')) {
+                                            layer = {
+                                                'id': name+'_layer',
+                                                'type': 'fill',
+                                                'source': name,
+                                                'paint': {
+                                                    'fill-color': '#303030',
+                                                    'fill-opacity': 0.5
+                                                }
+                                            }
+                                        } else if(name.includes('points')) {
+                                            // Setup layer for points
+                                            layer = {
+                                                'id': name+'_layer',
+                                                'type': 'symbol',
+                                                'source': name,
+                                                'layout': {
+                                                      'text-field': ['get','depthAdjustedFt'],
+                                                      'text-variable-anchor': ['top','bottom','left','right'],
+                                                      'text-radial-offset': 0.5,
+                                                      'text-justify': 'auto',
+                                                      'icon-image': ['get','icon'],
+                                                      'icon-size': 0.75
+                                                  },
+                                                  'paint' : {
+                                                    'icon-color': [
+                                                      'match',
+                                                      ['get','styleName'],
+                                                      'rock-to-silt',
+                                                      '#996300',
+                                                      'sand-dollar',
+                                                      '#cccc33',
+                                                      'rock-to-sand',
+                                                      '#cc8500',
+                                                      'sand-to-silt',
+                                                      '#ffa500',
+                                                      'rock-line',
+                                                      '#a0a0a0',
+                                                      'weeds',
+                                                      '#3cb371',
+                                                      'default-point',
+                                                      '#303030',
+                                                      '#ff6347' //default color
+                                                  ]}
+                                                }
+                                            // Update icon for points
+                                            let points = layer_data[data_file]
+                                            if(!name.includes('interest')) {
+                                                points.features.forEach(feature => {
+                                                    feature.properties['icon'] = 'circle-icon'
+                                                });
+                                            }
+
+                                        }
+
+                                        // Add source and layer
+                                        map.addSource(name,{'type':'geojson', data:layer_data[data_file]});
+                                        map.addLayer(layer);
+
+                                   });
+
+                                   // toggle off dive lines
+                                    // default dive line layers off
+                                    layers_data_files.forEach(data_file => {
+                                       let name = data_file.replace('data/','').replace('.geojson','') + '_layer';
+                                       if(dive_line_layer_regex.test(name)) {
+                                             map.setLayoutProperty(name, 'visibility', 'none');
+                                       }
+                                    });
+
+                                   // Update depths with todays numbers
+                                   updateVisuals(dateInput.value, document.getElementById('slider').value)
+                                });
+                            });
                         });
-                    }
-
-                    // Add source and layer
-                    map.addSource(name,{'type':'geojson', data:layer_data[data_file]});
-                    map.addLayer(layer);
-
-               });
-
-               // Update depths with todays numbers
-               updateVisuals(dateInput.value, document.getElementById('slider').value)
+                    });
+                });
             });
 }
 
@@ -480,7 +550,8 @@ function findTideHeightMeters(data,dateString,timeString) {
             if(dates.compare(target,data[i].eventDate) == 0) {
                 //console.log(targetStringDate + " is : " + data[i].eventDate);
                 //console.log(" Meters: " + data[i].value + " QC = "+ data[i].qcFlagCode)
-                console.log('DATA Found IS '+data[i].eventDate)
+                console.log('DATA Found is '+data[i].eventDate + ' Tide Height in Meters: ' + data[i].value)
+                //console.dir(data[i])
                 tide = data[i].value
             }
         }

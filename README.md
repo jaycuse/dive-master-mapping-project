@@ -14,6 +14,9 @@ For testing there is a `docker-compose` and basic `Caddy` file to quickly spin u
 ## Tools Used
 ### LatLong to UTM Converter
 Easy Convert UTM to lat long and vise versa: https://www.latlong.net/lat-long-utm.html
+### KML to GeoJSON online converter
+Converts raw gps logs stored as `kml` format to `geojson` format: https://mygeodata.cloud/converter/kml-to-geojson
+
 ### Mapbox
 Mapbox for viewing map data in a browser: mapbox.com
 ### QGIS 

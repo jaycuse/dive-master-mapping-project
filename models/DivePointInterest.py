@@ -11,7 +11,7 @@ import dive_data_helper
 # Use getX() and getY() to convert to cartesian notation
 # prevLine is a reference to the line that came before if we are plotting a line with multiple directions.
 class DivePointInterest:
-    def __init__(self,name, ref_point, depth_reading_ft, date, time, tide_height_ft, tide_height_target_ft, line_heading_deg, magnetic_declination_deg, distance_to_ref_point_ft, description):
+    def __init__(self,name, ref_point, depth_reading_ft, date, time, tide_height_ft, tide_height_target_ft, line_heading_deg, magnetic_declination_deg, distance_to_ref_point_ft, description,icon):
         #projection for zone in st andrews
         self.proj = Proj(constants.PROJECTION)
         self.name = name
@@ -25,6 +25,7 @@ class DivePointInterest:
         self.magnetic_declination_deg = magnetic_declination_deg
         self.distance_to_ref_pt_ft = distance_to_ref_point_ft
         self.description = description
+        self.icon = icon
 
         self.point_depth_adjustment_ft = self.tide_height_target_ft - self.tide_height_ft
         self.depth_adjusted_ft = self.depth_reading_ft + self.point_depth_adjustment_ft
@@ -115,7 +116,7 @@ class DivePointInterest:
             #print("end result Y: " + str(self.prevLine.getY()+round(math.cos(math.radians(self.degree))*self.getDistanceMeters(),0)))
             return self.ref_point.get_y()+round(math.cos(math.radians(self.line_heading_adjusted_deg))*self.get_distance_to_ref_pt_meters(),0)
         else:
-            return round(math.cos(math.radians(line_heading_adjusted_deg.degree))*self.get_distance_to_ref_pt_meters(),0)
+            return round(math.cos(math.radians(self.line_heading_adjusted_deg))*self.get_distance_to_ref_pt_meters(),0)
 
 
     def to_long_lat(self):
@@ -152,6 +153,7 @@ class DivePointInterest:
                     'refPointUTMEasting19T': ref_point_x,
                     'refPointUTMNorthing19T': ref_point_y,
                     'description': self.description,
+                    'icon': self.icon
                 },
             }
 

@@ -36,6 +36,17 @@ class DivePoint:
         self.ref_point = SimplePoint(self.ref_point_utm_easting_19t, self.ref_point_utm_northing_19t,None)
         self.extrapolated = is_extrapolated
 
+        if 'note' in point:
+            self.note = point['note']
+        else:
+            self.note = 'N/A'
+
+        if 'styleName' in point:
+            self.styleName = point['styleName']
+        else:
+            self.styleName = 'default-point'
+
+
     def recalculate_calculated_values(self):
         self.name = "dive{}-line{}-pt{}".format(self.dive_number, self.line_number, self.reel_length_mark_ft)
         self.distance_to_ref_pt_ft = self.line_distance_to_ref_pt_ft + self.reel_length_mark_ft
@@ -91,6 +102,9 @@ class DivePoint:
     def get_ref_point_utm_northing_19t(self):
         return self.ref_point_utm_northing_19t
 
+    def get_ref_point(self):
+        return self.ref_point
+
     def get_line_heading_deg(self):
             return self.line_heading_deg
     def get_magnetic_declination_deg(self):
@@ -137,7 +151,7 @@ class DivePoint:
             #print("end result Y: " + str(self.prevLine.getY()+round(math.cos(math.radians(self.degree))*self.getDistanceMeters(),0)))
             return self.ref_point.get_y()+round(math.cos(math.radians(self.line_heading_adjusted_deg))*self.get_distance_to_ref_pt_meters(),0)
         else:
-            return round(math.cos(math.radians(line_heading_adjusted_deg.degree))*self.get_distance_to_ref_pt_meters(),0)
+            return round(math.cos(math.radians(self.line_heading_adjusted_deg))*self.get_distance_to_ref_pt_meters(),0)
 
 
     def to_long_lat(self):
@@ -172,5 +186,7 @@ class DivePoint:
                     'refPointUTMEasting19T': self.ref_point_utm_easting_19t,
                     'refPointUTMNorthing19T': self.ref_point_utm_northing_19t,
                     'isExtrapolated': str(self.extrapolated),
+                    'note': self.note,
+                    'styleName': self.styleName
                 },
             }

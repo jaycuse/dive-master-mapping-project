@@ -44,7 +44,9 @@ dive_line_point = {
       ('lineHeadingAdjustedDeg', 'int'),
       ('refPointUTMEasting19T', 'float'),
       ('refPointUTMNorthing19T', 'float'),
-      ('isExtrapolated', 'str')
+      ('isExtrapolated', 'str'),
+      ('note', 'str'),
+      ('styleName','str')
     ])
 }
 
@@ -65,7 +67,8 @@ dive_point_of_interest = {
       ('lineHeadingAdjustedDeg', 'int'),
       ('refPointUTMEasting19T', 'float'),
       ('refPointUTMNorthing19T', 'float'),
-      ('description', 'str')
+      ('description', 'str'),
+      ('icon','str')
     ])
 }
 
